@@ -2,10 +2,12 @@
 
 namespace Library.Strings
 {
+    using Bytes;
     using System;
     using System.IO;
     using System.Net.Mail;
     using System.Security;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Web;
     using System.Xml;
@@ -13,21 +15,16 @@ namespace Library.Strings
 
     public static class StringExtensions
     {
-        
+        /// <summary>
+        /// Used in Hashing / Security section.
+        /// </summary>
+        private const string ConstantSalt = "SecureSalt123@";
 
-        #region [ Rebuilding Strings ]
-        
-        public static string RemoveLast(this string instr, int number = 1)
-        {
-            return instr.Substring(0, instr.Length - number);
-        }
-
-        public static string RemoveFirst(this string instr, int number = 1)
-        {
-            return instr.Substring(number);
-        }
-        #endregion
-
+        /// <summary>
+        /// Add quotes to the current string.
+        /// </summary>
+        /// <param name="item">Current string.</param>
+        /// <returns></returns>
         public static string AddQuotes(this string item) => '"' + item + '"';
 
         /// <summary>
@@ -57,6 +54,92 @@ namespace Library.Strings
 
             return secureString;
         }
+
+        #region [ Rebuilding Strings ]
+
+        public static string RemoveLast(this string instr, int number = 1)
+        {
+            return instr.Substring(0, instr.Length - number);
+        }
+
+        public static string RemoveFirst(this string instr, int number = 1)
+        {
+            return instr.Substring(number);
+        }
+        #endregion
+
+        #region [ Hashing / Security ]
+
+        /// <summary>
+        /// Create a hash based on the input string. 
+        /// </summary>
+        /// <param name="strToHash">
+        /// String to hash. 
+        /// </param>
+        /// <returns>
+        /// Hash for this string. 
+        /// </returns>
+        public static byte[] GetHashSHA1(this string strToSHA1) => new SHA1Managed().ComputeHash(new UnicodeEncoding().GetBytes(strToSHA1));
+
+        /// <summary>
+        /// Create a secur ehash based on the input string. 
+        /// </summary>
+        /// <param name="strToHash">
+        /// String to hash. 
+        /// </param>
+        /// <returns>
+        /// Secure hash for this string. 
+        /// </returns>
+        public static byte[] GetSecureHash(this string strToHash, string salt = ConstantSalt) => GetHashSHA1(strToHash + salt);
+
+        /// <summary>
+        /// Convert a string to a hash. 
+        /// </summary>
+        /// <param name="strInput">
+        /// String to convert. 
+        /// </param>
+        /// <returns>
+        /// Converted hash. 
+        /// </returns>
+        public static byte[] StringToHash(this string strToHash)
+        {
+            string[] arrInput;
+            byte[] arrResult;
+
+            if (strToHash.Contains(" "))
+            {
+                // old style decimal spaced-out system, strip polluted database values 
+                arrInput = strToHash.Trim().Split(' ');
+                arrResult = new byte[arrInput.Length];
+
+                for (int intIndex = 0; intIndex < arrInput.Length; intIndex++)
+                {
+                    arrResult[intIndex] = Convert.ToByte(arrInput[intIndex]);
+                }
+            }
+            else
+            {
+                // new style compact hexadecimal system 
+                arrResult = new byte[strToHash.Length >> 1];
+
+                for (int intIndex = 0; intIndex < (strToHash.Length >> 1); intIndex++)
+                {
+                    arrResult[intIndex] = Convert.ToByte(strToHash.Substring(intIndex << 1, 2), 16);
+                }
+            }
+
+            return arrResult;
+        }
+
+        public static bool CompareHash(this string currentString, string stringToCompare)
+        {
+            // Convert old type hash to new type 
+            if (currentString.Contains(" ")) currentString = currentString.StringToHash().HashToString();
+            if (stringToCompare.Contains(" ")) stringToCompare = stringToCompare.StringToHash().HashToString();
+
+            return currentString.Equals(stringToCompare, StringComparison.Ordinal);
+        }
+        #endregion
 
         #region [ Reverse ]
         /// <summary>

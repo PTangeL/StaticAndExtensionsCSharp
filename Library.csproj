@@ -51,13 +51,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bytes\BytesExntesions.cs" />
     <Compile Include="Dates\DateTimeExtensions.cs" />
     <Compile Include="Dates\DateTimeUtils.cs" />
     <Compile Include="Enumerables\EnumExtensions.cs" />
     <Compile Include="Exceptions\ExceptionExtensions.cs" />
-    <Compile Include="Hashing\Hashing.cs" />
+    <Compile Include="FileSystem\DirectoryExtensions.cs" />
+    <Compile Include="FileSystem\FileInfoExtensions.cs" />
+    <Compile Include="HTTP\HttpResponseExtensions.cs" />
     <Compile Include="Images\ImageUtils.cs" />
-    <Compile Include="Images\Quantizer.cs" />
     <Compile Include="Json\IJsonableExtensions.cs" />
     <Compile Include="Json\IJsonable.cs" />
     <Compile Include="Lists\IEnumerableExtensions.cs" />
