@@ -64,6 +64,7 @@
     <Compile Include="Json\IJsonable.cs" />
     <Compile Include="Lists\IEnumerableExtensions.cs" />
     <Compile Include="Numbers\DoubleExtensions.cs" />
+    <Compile Include="Objects\ObjectExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strings\StringExtensions.cs" />
     <Compile Include="XML\XDocumentExtensions.cs" />
