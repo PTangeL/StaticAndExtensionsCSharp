@@ -4,15 +4,20 @@ namespace Library.Strings
 {
     using Bytes;
     using System;
+    using System.Collections.Specialized;
     using System.IO;
     using System.Net.Mail;
     using System.Security;
     using System.Security.Cryptography;
     using System.Text;
+    using System.Text.RegularExpressions;
     using System.Web;
     using System.Xml;
     using System.Xml.Serialization;
 
+    /// <summary>
+    /// This class have all the extension methods for strings.
+    /// </summary>
     public static class StringExtensions
     {
         /// <summary>
@@ -57,15 +62,21 @@ namespace Library.Strings
 
         #region [ Rebuilding Strings ]
 
-        public static string RemoveLast(this string instr, int number = 1)
-        {
-            return instr.Substring(0, instr.Length - number);
-        }
+        /// <summary>
+        /// Remove from the end of the string how many chars you want
+        /// </summary>
+        /// <param name="instr">The current string.</param>
+        /// <param name="number">How many you want to remove from the end.</param>
+        /// <returns></returns>
+        public static string RemoveLast(this string instr, int number = 1) => instr.Substring(0, instr.Length - number);
 
-        public static string RemoveFirst(this string instr, int number = 1)
-        {
-            return instr.Substring(number);
-        }
+        /// <summary>
+        /// Remove from the start of the string how many chars you want
+        /// </summary>
+        /// <param name="instr">The current string.</param>
+        /// <param name="number">How many you want to remove from the start.</param>
+        /// <returns></returns>
+        public static string RemoveFirst(this string instr, int number = 1) => instr.Substring(number);
         #endregion
 
         #region [ Hashing / Security ]
@@ -131,14 +142,13 @@ namespace Library.Strings
             return arrResult;
         }
 
-        public static bool CompareHash(this string currentString, string stringToCompare)
-        {
-            // Convert old type hash to new type 
-            if (currentString.Contains(" ")) currentString = currentString.StringToHash().HashToString();
-            if (stringToCompare.Contains(" ")) stringToCompare = stringToCompare.StringToHash().HashToString();
-
-            return currentString.Equals(stringToCompare, StringComparison.Ordinal);
-        }
+        /// <summary>
+        /// Compare if the string is equal with Ordinal case.
+        /// </summary>
+        /// <param name="currentString">The current string.</param>
+        /// <param name="stringToCompare">The string you want to compare with.</param>
+        /// <returns></returns>
+        public static bool CompareHash(this string currentString, string stringToCompare) => currentString.Equals(stringToCompare, StringComparison.Ordinal);
         #endregion
 
         #region [ Reverse ]
@@ -156,6 +166,7 @@ namespace Library.Strings
         #endregion
 
         #region [ XmlSerialize XmlDeserialize ]
+
         /// <summary>Serialises an object of type T in to an xml string</summary>
         /// <typeparam name="T">Any class type</typeparam>
         /// <param name="objectToSerialise">Object to serialise</param>
@@ -174,8 +185,8 @@ namespace Library.Strings
             }
 
             // ascii 60 = '<' and ascii 62 = '>'
-            xml = xml.Substring(xml.IndexOf(Convert.ToChar(60)));
-            xml = xml.Substring(0, (xml.LastIndexOf(Convert.ToChar(62)) + 1));
+            xml = xml.Substring(xml.IndexOf('<'));
+            xml = xml.Substring(0, (xml.LastIndexOf('>') + 1));
             return xml;
         }
 
@@ -263,7 +274,7 @@ namespace Library.Strings
         /// <param name="value">The value.</param>
         /// <param name="defaultvalue">The defaultvalue.</param>
         /// <returns></returns>
-        public static DateTime? ToDateTime(this string value, DateTime? defaultvalue)
+        public static DateTime? ToDateTime(this string value, DateTime? defaultvalue = null)
         {
             DateTime result;
             if (DateTime.TryParse(value, out result))
@@ -272,13 +283,6 @@ namespace Library.Strings
             }
             else return defaultvalue;
         }
-
-        /// <summary>
-        /// Toes the date time.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        public static DateTime? ToDateTime(this string value) => ToDateTime(value, null);
 
         /// <summary>
         /// Converts a string value to bool value, supports "T" and "F" conversions.
@@ -305,6 +309,7 @@ namespace Library.Strings
         #endregion
 
         #region [ Encrypt Decrypt ]
+
         /// <summary>
         /// Encryptes a string using the supplied key. Encoding is done using RSA encryption.
         /// </summary>
@@ -324,10 +329,10 @@ namespace Library.Strings
                 throw new ArgumentException("Cannot encrypt using an empty key. Please supply an encryption key.");
             }
 
-            System.Security.Cryptography.CspParameters cspp = new System.Security.Cryptography.CspParameters();
+            CspParameters cspp = new CspParameters();
             cspp.KeyContainerName = key;
 
-            System.Security.Cryptography.RSACryptoServiceProvider rsa = new System.Security.Cryptography.RSACryptoServiceProvider(cspp);
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(cspp);
             rsa.PersistKeyInCsp = true;
 
             byte[] bytes = rsa.Encrypt(Encoding.UTF8.GetBytes(stringToEncrypt), true);
@@ -357,10 +362,10 @@ namespace Library.Strings
 
             try
             {
-                System.Security.Cryptography.CspParameters cspp = new System.Security.Cryptography.CspParameters();
+                CspParameters cspp = new CspParameters();
                 cspp.KeyContainerName = key;
 
-                System.Security.Cryptography.RSACryptoServiceProvider rsa = new System.Security.Cryptography.RSACryptoServiceProvider(cspp);
+                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(cspp);
                 rsa.PersistKeyInCsp = true;
 
                 string[] decryptArray = stringToDecrypt.Split(new string[] { "-" }, StringSplitOptions.None);
@@ -388,11 +393,7 @@ namespace Library.Strings
         /// <returns>
         /// 	<c>true</c> if [is valid URL] [the specified text]; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsValidUrl(this string text)
-        {
-            System.Text.RegularExpressions.Regex rx = new System.Text.RegularExpressions.Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?");
-            return rx.IsMatch(text);
-        }
+        public static bool IsValidUrl(this string text) => new Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?").IsMatch(text);
         #endregion
 
         #region [ IsValidEmailAddress ]
@@ -484,53 +485,35 @@ namespace Library.Strings
         /// </summary>
         /// <param name="data">The data.</param>
         /// <returns></returns>
-        public static string HtmlEncode(this string data)
-        {
-            return HttpUtility.HtmlEncode(data);
-        }
+        public static string HtmlEncode(this string data) => HttpUtility.HtmlEncode(data);
 
         /// <summary>
         /// Converts the HTML-encoded string into a decoded string
         /// </summary>
-        public static string HtmlDecode(this string data)
-        {
-            return HttpUtility.HtmlDecode(data);
-        }
+        public static string HtmlDecode(this string data) => HttpUtility.HtmlDecode(data);
 
         /// <summary>
         /// Parses a query string into a System.Collections.Specialized.NameValueCollection
         /// using System.Text.Encoding.UTF8 encoding.
         /// </summary>
-        public static System.Collections.Specialized.NameValueCollection ParseQueryString(this string query)
-        {
-            return System.Web.HttpUtility.ParseQueryString(query);
-        }
+        public static NameValueCollection ParseQueryString(this string query) => HttpUtility.ParseQueryString(query);
 
         /// <summary>
         /// Encode an Url string
         /// </summary>
-        public static string UrlEncode(this string url)
-        {
-            return System.Web.HttpUtility.UrlEncode(url);
-        }
+        public static string UrlEncode(this string url) => HttpUtility.UrlEncode(url);
 
         /// <summary>
         /// Converts a string that has been encoded for transmission in a URL into a
         /// decoded string.
         /// </summary>
-        public static string UrlDecode(this string url)
-        {
-            return System.Web.HttpUtility.UrlDecode(url);
-        }
+        public static string UrlDecode(this string url) => HttpUtility.UrlDecode(url);
 
         /// <summary>
         /// Encodes the path portion of a URL string for reliable HTTP transmission from
         /// the Web server to a client.
         /// </summary>
-        public static string UrlPathEncode(this string url)
-        {
-            return System.Web.HttpUtility.UrlPathEncode(url);
-        }
+        public static string UrlPathEncode(this string url) => HttpUtility.UrlPathEncode(url);
         #endregion
     }
 }
