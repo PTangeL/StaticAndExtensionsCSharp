@@ -1,4 +1,4 @@
-# Static AndExtensions CSharp
+# Static And Extensions CSharp
 Great static methods and extension methods for C# developers
 
 Features:
