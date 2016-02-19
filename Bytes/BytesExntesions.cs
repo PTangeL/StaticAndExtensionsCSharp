@@ -4,6 +4,12 @@ namespace Library.Bytes
 {
     public static class BytesExntesions
     {
+        /// <summary>
+        /// This method will convert the hash into string.
+        /// </summary>
+        /// <param name="hash">The current hash.</param>
+        /// <param name="blnNumericWithSpaces">if your hash have empty spaces in hte middle or not.</param>
+        /// <returns></returns>
         public static string HashToString(this byte[] hash, bool blnNumericWithSpaces = false)
         {
             int intIndex;

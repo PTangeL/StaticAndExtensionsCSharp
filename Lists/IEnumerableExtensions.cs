@@ -84,8 +84,7 @@ namespace Library.Lists
         /// <param name="item">
         /// The item/items you want to add to the list. 
         /// </param>
-        public static void Add<T>(this IEnumerable<T> source, ref IEnumerable<T> target,
-            params T[] item)
+        public static void Add<T>(this IEnumerable<T> source, ref IEnumerable<T> target, params T[] item)
         {
             source = source ?? new List<T>();
             target = target ?? new List<T>();
@@ -114,8 +113,7 @@ namespace Library.Lists
         /// <param name="item">
         /// The item/items you want to add to the list. 
         /// </param>
-        public static void AddUnique<T>(this IEnumerable<T> source, ref IEnumerable<T> target,
-            params T[] item)
+        public static void AddUnique<T>(this IEnumerable<T> source, ref IEnumerable<T> target, params T[] item)
         {
             foreach (T t in item)
             {
