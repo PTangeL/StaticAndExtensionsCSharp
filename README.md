@@ -7,24 +7,24 @@ Features:
   * IJsonable.
 
 * Static Classes:
-** DateTimeUtils;
-** Hashing.
+ * DateTimeUtils;
+ * Hashing.
 
 * Extended Classes:
-** IJsonableExtensions;
-** DateTimeExtensions;
-** EnumExtensions;
-** ExceptionExtensions;
-** DirectoryExtensions;
-** FileInfoExtensions;
-** HttpResponseExtensions;
-** ImageUtils;
-** IEnumerableExtensions;
-** DoubleExtensions;
-** StringExtensions;
-** XDocumentExtensions;
-** XmlDocumentExtensions;
-** XmlElementExtensions.
+ * IJsonableExtensions;
+ * DateTimeExtensions;
+ * EnumExtensions;
+ * ExceptionExtensions;
+ * DirectoryExtensions;
+ * FileInfoExtensions;
+ * HttpResponseExtensions;
+ * ImageUtils;
+ * IEnumerableExtensions;
+ * DoubleExtensions;
+ * StringExtensions;
+ * XDocumentExtensions;
+ * XmlDocumentExtensions;
+ * XmlElementExtensions.
 
 ## Requirements
 
