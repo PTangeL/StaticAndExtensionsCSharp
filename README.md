@@ -8,9 +8,9 @@ Features:
 
 * Static Classes:
  * DateTimeUtils;
- * Hashing.
 
 * Extended Classes:
+ * BytesExtensions;
  * IJsonableExtensions;
  * DateTimeExtensions;
  * EnumExtensions;
