@@ -4,7 +4,7 @@ Great static methods and extension methods for C# developers
 Features:
 
 * Classes/Interfaces:
-.* IJsonable.
+⋅* IJsonable.
 
 * Static Classes:
 ** DateTimeUtils;
