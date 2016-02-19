@@ -7,24 +7,24 @@ Features:
   * IJsonable.
 
 * Static Classes:
- * DateTimeUtils;
- * Hashing.
+ * [DateTimeUtils](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/DateTime-Utils);
 
 * Extended Classes:
- * IJsonableExtensions;
- * DateTimeExtensions;
- * EnumExtensions;
- * ExceptionExtensions;
- * DirectoryExtensions;
- * FileInfoExtensions;
- * HttpResponseExtensions;
- * ImageUtils;
- * IEnumerableExtensions;
- * DoubleExtensions;
- * StringExtensions;
- * XDocumentExtensions;
- * XmlDocumentExtensions;
- * XmlElementExtensions.
+ * [BytesExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/Bytes-Extensions);
+ * [IJsonableExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/IJsonable-Extensions);
+ * [DateTimeExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/DateTime-Extensions);
+ * [EnumExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/Enum-Extensions);
+ * [ExceptionExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/Exception-Extensions);
+ * [DirectoryExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/Directory-Extensions);
+ * [FileInfoExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/FileInfo-Extensions);
+ * [HttpResponseExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/HttpResponse-Extensions);
+ * [ImageUtils](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/Image-Utils);
+ * [IEnumerableExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/IEnumerable-Extensions);
+ * [DoubleExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/Double-Extensions);
+ * [StringExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/String-Extensions);
+ * [XDocumentExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/XDocument-Extensions);
+ * [XmlDocumentExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/XmlDocument-Extensions);
+ * [XmlElementExtensions](https://github.com/PTangeL/StaticAndExtensionsCSharp/wiki/XmlElement-Extensions).
 
 ## Requirements
 
