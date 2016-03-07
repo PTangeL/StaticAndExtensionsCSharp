@@ -28,6 +28,26 @@ namespace Library.Lists
         public static IEnumerable<T> SetAllValues<T>(this IEnumerable<T> array, T value) => array.ForEach(item => item = value);
 
         /// <summary>
+        /// ForEach for IEnumerables.
+        /// </summary>
+        /// <typeparam name="T">The Type of the object you have.</typeparam>
+        /// <param name="list">The IEnumerable list you have.</param>
+        /// <param name="action">The action you want to do.</param>
+        /// <returns></returns>
+        public static int ForEach<T>(this IEnumerable<T> list, Action<int, T> action) 
+        {
+            if (list == null) throw new ArgumentNullException("list");
+            if (action == null) throw new ArgumentNullException("action");
+
+            var index = 0;
+
+            foreach (var elem in list)
+                action(index++, elem);
+
+            return index;
+        }
+
+        /// <summary>
         ///   Returns all combinations of a chosen amount of selected elements in the sequence.
         /// </summary>
         /// <example>
