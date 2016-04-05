@@ -25,7 +25,8 @@ namespace Library.Lists
         /// <param name="array">The one-dimensional, zero-based list.</param>
         /// <param name="value">The value.</param>
         /// <returns>A reference to the changed list.</returns>
-        public static IEnumerable<T> SetAllValues<T>(this IEnumerable<T> array, T value) => array.ForEach(item => item = value);
+        public static IEnumerable<T> SetAllValues<T>(this IEnumerable<T> array, T value) => 
+            array.ForEach(item => item = value);
 
         /// <summary>
         /// ForEach for IEnumerables.
