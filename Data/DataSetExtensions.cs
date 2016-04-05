@@ -1,6 +1,7 @@
 ﻿namespace Library.Data
 {
     using System.Data;
+    using System.Diagnostics.Contracts;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
 
@@ -17,16 +18,42 @@
         public static object Get(this DataSet ds, int table, int row, string column)
         {
             if (table >= 0 && table <= ds.Tables.Count)
-
             {
                 if (row >= 0 && row <= ds.Tables[table].Rows.Count)
-
                 {
                     return ds.Tables[table].Rows[row][column];
                 }
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Get a value from the dataset.
+        /// </summary>
+        /// <param name="ds">The dataset.</param>
+        /// <param name="table">The table in case of multiples.</param>
+        /// <param name="row">The row.</param>
+        /// <param name="column">The Column.</param>
+        /// <returns></returns>
+        public static DataSet Where(this DataSet ds, string column, object expectedValue)
+        {
+            Contract.Requires(ds != null);
+            Contract.Requires(string.IsNullOrEmpty(column));
+
+            var toReturn = ds.Clone();
+            
+            foreach(DataTable table in ds?.Tables)
+            {
+                // Clear the rows.
+                toReturn.Tables[table.TableName].Rows.Clear();
+
+                foreach (DataRow row in table.Rows)
+                    if (row[column].Equals(expectedValue))
+                        toReturn.Tables[table.TableName].Rows.Add(row);
+            }
+
+            return toReturn;
         }
 
         /// <summary>

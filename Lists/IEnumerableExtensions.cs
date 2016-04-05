@@ -104,8 +104,8 @@ namespace Library.Lists
         /// </param>
         public static void Add<T>(this IEnumerable<T> source, ref IEnumerable<T> target, params T[] item)
         {
-            source = source ?? new List<T>();
-            target = target ?? new List<T>();
+            source = source ?? Enumerable.Empty<T>();
+            target = target ?? Enumerable.Empty<T>();
 
             if (item == null)
             {
