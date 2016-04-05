@@ -52,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bytes\BytesExntesions.cs" />
+    <Compile Include="Data\DataSetExtensions.cs" />
+    <Compile Include="Data\DataTableExtensions.cs" />
     <Compile Include="Dates\DateTimeExtensions.cs" />
     <Compile Include="Dates\DateTimeUtils.cs" />
     <Compile Include="Enumerables\EnumExtensions.cs" />
