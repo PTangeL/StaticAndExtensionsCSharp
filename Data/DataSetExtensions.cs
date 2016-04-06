@@ -3,6 +3,7 @@
     using System.Data;
     using System.Diagnostics.Contracts;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
 
     public static class DataSetExtensions
@@ -32,25 +33,46 @@
         /// Get a value from the dataset.
         /// </summary>
         /// <param name="ds">The dataset.</param>
-        /// <param name="table">The table in case of multiples.</param>
-        /// <param name="row">The row.</param>
         /// <param name="column">The Column.</param>
+        /// <param name="expectedValue">The value you expect to get from the column.</param>
         /// <returns></returns>
         public static DataSet Where(this DataSet ds, string column, object expectedValue)
         {
             Contract.Requires(ds != null);
+            Contract.Requires(expectedValue != null);
             Contract.Requires(string.IsNullOrEmpty(column));
 
-            var toReturn = ds.Clone();
-            
-            foreach(DataTable table in ds?.Tables)
-            {
-                // Clear the rows.
-                toReturn.Tables[table.TableName].Rows.Clear();
+            Contract.Ensures(Contract.Result<DataSet>() != null);
 
-                foreach (DataRow row in table.Rows)
-                    if (row[column].Equals(expectedValue))
-                        toReturn.Tables[table.TableName].Rows.Add(row);
+            return Where(ds, $"{column} = '{expectedValue.ToString()}'");
+        }
+
+        /// <summary>
+        /// Get a value from the dataset.
+        /// </summary>
+        /// <param name="ds">The dataset.</param>
+        /// <param name="filterExpression">Example: columnName: Size, expectedValue: >= 230, then the value on the filter: columnName >= expectedValue</param>
+        /// <param name="columnsOnFilter">Fill this with the column names used at filterExpressions</param>
+        /// <returns></returns>
+        public static DataSet Where(this DataSet ds, string filterExpression, params string[] columnsOnFilter)
+        {
+            Contract.Requires(ds != null);
+            Contract.Requires(columnsOnFilter != null);
+
+            Contract.Ensures(Contract.Result<DataSet>() != null);
+
+            var toReturn = ds.Clone();
+            toReturn.Tables.Clear();
+
+            foreach (DataTable table in ds.Tables)
+            {
+                if (columnsOnFilter.Where(n => table.Columns.Contains(n)).Count() == 0)
+                    continue;
+
+                var filteredRows = table.Select(filterExpression);
+                    
+                if(filteredRows.Any())
+                    toReturn.Tables.Add(filteredRows.CopyToDataTable());
             }
 
             return toReturn;
@@ -106,7 +128,12 @@
         /// <returns>
         ///     <c>true</c> if the specified data set has constraints; otherwise, <c>false</c>.
         /// </returns>
-        public static bool HasConstraints(this DataSet dataSet, string tableName) => dataSet.Tables[tableName].Constraints.Count > 0 ? true : false;
+        public static bool HasConstraints(this DataSet dataSet, string tableName)
+        {
+            Contract.Requires(dataSet != null);
+
+            return dataSet.Tables[tableName].Constraints.Count > 0 ? true : false;
+        }
 
         /// <summary>
         /// Determines whether the specified data set has errors.
@@ -116,7 +143,12 @@
         /// <returns>
         ///     <c>true</c> if the specified data set has errors; otherwise, <c>false</c>.
         /// </returns>
-        public static bool HasTableErrors(this DataSet dataSet, string tableName) => dataSet.Tables[tableName].HasErrors;
+        public static bool HasTableErrors(this DataSet dataSet, string tableName)
+        {
+            Contract.Requires(dataSet != null);
+
+            return dataSet.Tables[tableName].HasErrors;
+        }
 
         /// <summary>
         /// Gets the table errors.
@@ -126,16 +158,19 @@
         /// <returns></returns>
         public static string GetTableErrors(this DataSet dataset, string tableName)
         {
-            string error = string.Empty;
+            Contract.Requires(dataset != null);
 
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            string error = string.Empty;
+            
             if (dataset.HasTableErrors(tableName))
             {
                 foreach (DataRow row in dataset.Tables[tableName].GetErrors())
                 {
                     foreach (DataColumn column in row.GetColumnsInError())
                     {
-                        error += string.Format("Error : {0}"
-                                                        , row.GetColumnError(column));
+                        error += string.Format("Error : {0}", row.GetColumnError(column));
                     }
                 }
             }
