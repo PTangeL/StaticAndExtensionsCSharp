@@ -41,6 +41,10 @@ If you found any issues with the client, please submit a bug report at the [Issu
 
 If you'd like to add a feature request please add some details how it is supposed to work.
 
+## Nuget Gallery
+
+Here you have the link to download directly to your code: [Nuget Gallery](https://www.nuget.org/packages/StaticAndExtensionsCSharp/)
+
 ## Patches
 
 The best bug reports come with a patch: fork the code on GitHub, then send a pull request so the fixes can be included in the next version.
