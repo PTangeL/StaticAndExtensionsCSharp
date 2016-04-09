@@ -1,4 +1,4 @@
-﻿namespace Library.Numbers
+﻿namespace StaticAndExtensionsCSharp.Numbers
 {
     using System.Globalization;
 

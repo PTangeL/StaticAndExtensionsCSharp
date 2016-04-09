@@ -1,4 +1,4 @@
-﻿namespace Library.HTTP
+﻿namespace StaticAndExtensionsCSharp.HTTP
 {
     using System.Web;
 

@@ -1,4 +1,4 @@
-﻿namespace Library.Json
+﻿namespace StaticAndExtensionsCSharp.Json
 {
     using Newtonsoft.Json;
 

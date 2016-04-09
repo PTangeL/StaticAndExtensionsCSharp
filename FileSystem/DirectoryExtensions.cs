@@ -1,4 +1,4 @@
-﻿namespace Library.FileSystem
+﻿namespace StaticAndExtensionsCSharp.FileSystem
 {
     using System.IO;
 

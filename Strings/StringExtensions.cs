@@ -1,6 +1,6 @@
 ﻿
 
-namespace Library.Strings
+namespace StaticAndExtensionsCSharp.Strings
 {
     using Bytes;
     using System;

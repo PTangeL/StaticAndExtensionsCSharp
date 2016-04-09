@@ -1,4 +1,4 @@
-﻿namespace Library.Objects
+﻿namespace StaticAndExtensionsCSharp.Objects
 {
     using System;
 

@@ -1,4 +1,4 @@
-﻿namespace Library.Dates
+﻿namespace StaticAndExtensionsCSharp.Dates
 {
     using System;
 

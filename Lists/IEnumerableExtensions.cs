@@ -1,20 +1,17 @@
 ﻿/// <summary>
 /// This namespace will contain all the utilities we can get for any type of lists.
 /// </summary>
-namespace Library.Lists
+namespace StaticAndExtensionsCSharp.Lists
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Diagnostics.Contracts;
-    using System.Drawing;
     using System.Linq;
-    using System.Reflection;
     using System.Text;
 
     /// <summary>
-    /// This class contains every Utilities you could want for your lists / enumerables / Arrays. 
+    /// This class contains every Utilities you could want for your lists / enumerables / Arrays.
     /// </summary>
     public static class IEnumerableExtensions
     {
@@ -25,7 +22,8 @@ namespace Library.Lists
         /// <param name="array">The one-dimensional, zero-based list.</param>
         /// <param name="value">The value.</param>
         /// <returns>A reference to the changed list.</returns>
-        public static IEnumerable<T> SetAllValues<T>(this IEnumerable<T> array, T value) => array.ForEach(item => item = value);
+        public static IEnumerable<T> SetAllValues<T>(this IEnumerable<T> array, T value) =>
+            array.ForEach(item => item = value);
 
         /// <summary>
         /// ForEach for IEnumerables.
@@ -34,7 +32,7 @@ namespace Library.Lists
         /// <param name="list">The IEnumerable list you have.</param>
         /// <param name="action">The action you want to do.</param>
         /// <returns></returns>
-        public static int ForEach<T>(this IEnumerable<T> list, Action<int, T> action) 
+        public static int ForEach<T>(this IEnumerable<T> list, Action<int, T> action)
         {
             if (list == null) throw new ArgumentNullException("list");
             if (action == null) throw new ArgumentNullException("action");
@@ -90,24 +88,24 @@ namespace Library.Lists
         }
 
         /// <summary>
-        /// Adds the specified item / items to an enumerable. 
+        /// Adds the specified item / items to an enumerable.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the item you want to add. 
+        /// The type of the item you want to add.
         /// </typeparam>
         /// <param name="source">
-        /// The enumerable list you have. 
+        /// The enumerable list you have.
         /// </param>
         /// <param name="target">
-        /// The list you want to add the items. 
+        /// The list you want to add the items.
         /// </param>
         /// <param name="item">
-        /// The item/items you want to add to the list. 
+        /// The item/items you want to add to the list.
         /// </param>
         public static void Add<T>(this IEnumerable<T> source, ref IEnumerable<T> target, params T[] item)
         {
-            source = source ?? new List<T>();
-            target = target ?? new List<T>();
+            source = source ?? Enumerable.Empty<T>();
+            target = target ?? Enumerable.Empty<T>();
 
             if (item == null)
             {
@@ -119,25 +117,25 @@ namespace Library.Lists
         }
 
         /// <summary>
-        /// Validate if the item /items was already added to the list, if not add it. 
+        /// Validate if the item /items was already added to the list, if not add it.
         /// </summary>
         /// <typeparam name="T">
-        /// The type of the item you want to add. 
+        /// The type of the item you want to add.
         /// </typeparam>
         /// <param name="source">
-        /// The enumerable list you have. 
+        /// The enumerable list you have.
         /// </param>
         /// <param name="target">
-        /// The list you want to add the items. 
+        /// The list you want to add the items.
         /// </param>
         /// <param name="item">
-        /// The item/items you want to add to the list. 
+        /// The item/items you want to add to the list.
         /// </param>
         public static void AddUnique<T>(this IEnumerable<T> source, ref IEnumerable<T> target, params T[] item)
         {
             foreach (T t in item)
             {
-                // If already contains will not add. 
+                // If already contains will not add.
                 if (target.Contains(t))
                     continue;
 
@@ -148,7 +146,7 @@ namespace Library.Lists
         /// <summary>
         /// Check if this IEnumerable is null, if it is just create an empty IEnumerable.
         /// </summary>
-        /// <example> 
+        /// <example>
         /// MyList.EmptyIfNull().Where(....)
         /// </exampley>
         /// <typeparam name="T"></typeparam>
@@ -217,6 +215,8 @@ namespace Library.Lists
             return list;
         }
 
+#if Office
+
         /// <summary>
         /// Extension method to write list data to excel.
         /// The PROPERTY HAVE TO HAVE DisplatNameAttribute.
@@ -226,7 +226,7 @@ namespace Library.Lists
         /// <param name="PathToSave">Path to save file.</param>
         public static void ToExcel<T>(this IEnumerable<T> list, string PathToSave)
         {
-            #region Declarations
+        #region Declarations
 
             if (string.IsNullOrEmpty(PathToSave))
             {
@@ -254,15 +254,14 @@ namespace Library.Lists
 
             string strHeaderStart = "A2";
             string strDataStart = "A3";
-            #endregion
 
-            #region Processing
+        #endregion Declarations
 
+        #region Processing
 
             try
             {
-                #region Init Excel app.
-
+        #region Init Excel app.
 
                 excelApp = new Microsoft.Office.Interop.Excel.Application();
                 books = excelApp.Workbooks;
@@ -270,15 +269,13 @@ namespace Library.Lists
                 sheets = book.Worksheets;
                 sheet = sheets.get_Item(1);
 
-                #endregion
+        #endregion Init Excel app.
 
-                #region Creating Header
-
+        #region Creating Header
 
                 Dictionary<string, string> objHeaders = new Dictionary<string, string>();
 
                 PropertyInfo[] headerInfo = typeof(T).GetProperties();
-
 
                 foreach (var property in headerInfo)
                 {
@@ -287,7 +284,6 @@ namespace Library.Lists
                     objHeaders.Add(property.Name, attribute == null ?
                                         property.Name : attribute.DisplayName);
                 }
-
 
                 range = sheet.get_Range(strHeaderStart, optionalValue);
                 range = range.get_Resize(1, objHeaders.Count);
@@ -299,10 +295,9 @@ namespace Library.Lists
                 font.Bold = true;
                 range.Interior.Color = Color.LightGray.ToArgb();
 
-                #endregion
+        #endregion Creating Header
 
-                #region Writing data to cell
-
+        #region Writing data to cell
 
                 int count = list.Count();
                 object[,] objData = new object[count, objHeaders.Count];
@@ -318,7 +313,6 @@ namespace Library.Lists
                     }
                 }
 
-
                 range = sheet.get_Range(strDataStart, optionalValue);
                 range = range.get_Resize(count, objHeaders.Count);
 
@@ -329,19 +323,18 @@ namespace Library.Lists
                 range = range.get_Resize(count + 1, objHeaders.Count);
                 range.Columns.AutoFit();
 
-                #endregion
+        #endregion Writing data to cell
 
-                #region Saving data and Opening Excel file.
-
+        #region Saving data and Opening Excel file.
 
                 if (string.IsNullOrEmpty(PathToSave) == false)
                     book.SaveAs(PathToSave);
 
                 excelApp.Visible = true;
 
-                #endregion
+        #endregion Saving data and Opening Excel file.
 
-                #region Release objects
+        #region Release objects
 
                 try
                 {
@@ -378,15 +371,16 @@ namespace Library.Lists
                     GC.Collect();
                 }
 
-                #endregion
+        #endregion Release objects
             }
             catch (Exception ex)
             {
                 throw ex;
             }
 
-            #endregion
+        #endregion Processing
         }
+#endif
 
         public static void Each<T>(this IEnumerable<T> enumerable, Action<T> action)
         {
