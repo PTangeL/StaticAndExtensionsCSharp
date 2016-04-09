@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// This namespace will contain all the utilities we can get for any type of . 
 /// </summary>
-namespace Library.Enumerables
+namespace StaticAndExtensionsCSharp.Enumerables
 {
     using System;
     using System.ComponentModel;

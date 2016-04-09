@@ -1,4 +1,4 @@
-﻿namespace Library.Data
+﻿namespace StaticAndExtensionsCSharp.Data
 {
     using Lists;
     using System.Collections.Generic;

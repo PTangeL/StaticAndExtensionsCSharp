@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Library.Bytes
+namespace StaticAndExtensionsCSharp.Bytes
 {
     public static class BytesExntesions
     {

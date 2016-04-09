@@ -1,4 +1,4 @@
-﻿namespace Library.Data
+﻿namespace StaticAndExtensionsCSharp.Data
 {
     using System.Data;
     using System.Diagnostics.Contracts;

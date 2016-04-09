@@ -1,4 +1,4 @@
-﻿namespace Library.XML
+﻿namespace StaticAndExtensionsCSharp.XML
 {
     using System.Xml;
     using System.Xml.Linq;

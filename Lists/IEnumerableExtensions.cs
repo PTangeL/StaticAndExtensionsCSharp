@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// This namespace will contain all the utilities we can get for any type of lists.
 /// </summary>
-namespace Library.Lists
+namespace StaticAndExtensionsCSharp.Lists
 {
     using System;
     using System.Collections;

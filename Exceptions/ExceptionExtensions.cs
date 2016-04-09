@@ -1,4 +1,4 @@
-﻿namespace Library.Exceptions
+﻿namespace StaticAndExtensionsCSharp.Exceptions
 {
     using System;
 
