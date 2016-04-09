@@ -1,8 +1,5 @@
-﻿
-
-namespace StaticAndExtensionsCSharp.Strings
+﻿namespace StaticAndExtensionsCSharp.Strings
 {
-    using Bytes;
     using System;
     using System.Collections.Specialized;
     using System.IO;
@@ -26,6 +23,11 @@ namespace StaticAndExtensionsCSharp.Strings
         private const string ConstantSalt = "SecureSalt123@";
 
         /// <summary>
+        /// Used for Hashing Security Factor in BCrypt encryption.
+        /// </summary>
+        private const int ConstantBCryptSecurityFactor = 10;
+
+        /// <summary>
         /// Add quotes to the current string.
         /// </summary>
         /// <param name="item">Current string.</param>
@@ -34,7 +36,7 @@ namespace StaticAndExtensionsCSharp.Strings
 
         /// <summary>
         /// Checks string object's value to array of string values
-        /// </summary>        
+        /// </summary>
         /// <param name="stringValues">Array of string values to compare</param>
         /// <returns>Return true if any string value matches</returns>
         public static bool In(this string value, params string[] stringValues)
@@ -77,40 +79,73 @@ namespace StaticAndExtensionsCSharp.Strings
         /// <param name="number">How many you want to remove from the start.</param>
         /// <returns></returns>
         public static string RemoveFirst(this string instr, int number = 1) => instr.Substring(number);
-        #endregion
+
+        #endregion [ Rebuilding Strings ]
 
         #region [ Hashing / Security ]
 
+        #region [ SHA-1 ]
         /// <summary>
-        /// Create a hash based on the input string. 
+        /// Create a hash based on the input string.
         /// </summary>
-        /// <param name="strToHash">
-        /// String to hash. 
+        /// <param name="strToSHA1">
+        /// String to hash.
         /// </param>
         /// <returns>
-        /// Hash for this string. 
+        /// Hash for this string.
         /// </returns>
-        public static byte[] GetHashSHA1(this string strToSHA1) => new SHA1Managed().ComputeHash(new UnicodeEncoding().GetBytes(strToSHA1));
+        public static byte[] GetHash_SHA1(this string strToSHA1) => new SHA1Managed().ComputeHash(new UnicodeEncoding().GetBytes(strToSHA1));
 
         /// <summary>
-        /// Create a secur ehash based on the input string. 
+        /// Create a secure ehash based on the input string.
         /// </summary>
         /// <param name="strToHash">
-        /// String to hash. 
+        /// String to hash.
+        /// </param>
+        /// <param name="salt">The salt you wanna use, normally should be a constant in your code + another from your DB.</param>
+        /// <returns>
+        /// Secure hash for this string.
+        /// </returns>
+        public static byte[] GetSecureHash_SHA1(this string strToHash, string salt = ConstantSalt) => GetHash_SHA1(strToHash + salt);
+        #endregion [ SHA-1 ]
+
+        #region [ Bcrypt ]
+        
+        /// <summary>
+        /// Create a secure hash based on the input string.
+        /// </summary>
+        /// <param name="strToBCrypt">
+        /// String to hash.
+        /// </param>
+        /// <param name="securityFactor">
+        /// he cost factor for bcrypt is exponential, or rather, a cost factor of 10 means 2^10 rounds (1024), 
+        /// a cost factor of 16 would mean 2^16 rounds (65536). It's natural then that it would take 5-10 seconds. 
+        /// It should take about 64 times as long as a cost factor of 10 does.
         /// </param>
         /// <returns>
-        /// Secure hash for this string. 
+        /// Hash for this string.
         /// </returns>
-        public static byte[] GetSecureHash(this string strToHash, string salt = ConstantSalt) => GetHashSHA1(strToHash + salt);
+        public static string GetSecureHash_BCrypt(this string strToBCrypt, int securityFactor = ConstantBCryptSecurityFactor) =>
+            BCrypt.Net.BCrypt.HashPassword(strToBCrypt, BCrypt.Net.BCrypt.GenerateSalt(securityFactor));
 
         /// <summary>
-        /// Convert a string to a hash. 
+        /// Compare true passwords.
         /// </summary>
-        /// <param name="strInput">
-        /// String to convert. 
+        /// <param name="plainTextPassword">The plain text password.</param>
+        /// <param name="hashedPassword">The Encrypted password, normal stored on DB.</param>
+        /// <returns></returns>
+        public static bool ComparePassword_BCrypt(this string plainTextPassword, string hashedPassword) => 
+            BCrypt.Net.BCrypt.CheckPassword(plainTextPassword, hashedPassword);
+        #endregion [ Bcrypt ]
+
+        /// <summary>
+        /// Convert a string to a hash.
+        /// </summary>
+        /// <param name="strToHash">
+        /// String to convert.
         /// </param>
         /// <returns>
-        /// Converted hash. 
+        /// Converted hash.
         /// </returns>
         public static byte[] StringToHash(this string strToHash)
         {
@@ -119,7 +154,7 @@ namespace StaticAndExtensionsCSharp.Strings
 
             if (strToHash.Contains(" "))
             {
-                // old style decimal spaced-out system, strip polluted database values 
+                // old style decimal spaced-out system, strip polluted database values
                 arrInput = strToHash.Trim().Split(' ');
                 arrResult = new byte[arrInput.Length];
 
@@ -130,7 +165,7 @@ namespace StaticAndExtensionsCSharp.Strings
             }
             else
             {
-                // new style compact hexadecimal system 
+                // new style compact hexadecimal system
                 arrResult = new byte[strToHash.Length >> 1];
 
                 for (int intIndex = 0; intIndex < (strToHash.Length >> 1); intIndex++)
@@ -149,9 +184,11 @@ namespace StaticAndExtensionsCSharp.Strings
         /// <param name="stringToCompare">The string you want to compare with.</param>
         /// <returns></returns>
         public static bool CompareHash(this string currentString, string stringToCompare) => currentString.Equals(stringToCompare, StringComparison.Ordinal);
-        #endregion
+
+        #endregion [ Hashing / Security ]
 
         #region [ Reverse ]
+
         /// <summary>
         /// Reverse a String
         /// </summary>
@@ -163,7 +200,8 @@ namespace StaticAndExtensionsCSharp.Strings
             Array.Reverse(array);
             return new string(array);
         }
-        #endregion
+
+        #endregion [ Reverse ]
 
         #region [ XmlSerialize XmlDeserialize ]
 
@@ -211,15 +249,16 @@ namespace StaticAndExtensionsCSharp.Strings
                     {
                         return null;
                     }
-
                 }
             }
 
             return newObject;
         }
-        #endregion
+
+        #endregion [ XmlSerialize XmlDeserialize ]
 
         #region [ To X conversions ]
+
         /// <summary>
         /// Parses a string into an Enum
         /// </summary>
@@ -306,7 +345,8 @@ namespace StaticAndExtensionsCSharp.Strings
             }
             else return null;
         }
-        #endregion
+
+        #endregion [ To X conversions ]
 
         #region [ Encrypt Decrypt ]
 
@@ -371,11 +411,9 @@ namespace StaticAndExtensionsCSharp.Strings
                 string[] decryptArray = stringToDecrypt.Split(new string[] { "-" }, StringSplitOptions.None);
                 byte[] decryptByteArray = Array.ConvertAll(decryptArray, (s => Convert.ToByte(byte.Parse(s, System.Globalization.NumberStyles.HexNumber))));
 
-
                 byte[] bytes = rsa.Decrypt(decryptByteArray, true);
 
                 result = Encoding.UTF8.GetString(bytes);
-
             }
             finally
             {
@@ -384,9 +422,11 @@ namespace StaticAndExtensionsCSharp.Strings
 
             return result;
         }
-        #endregion
+
+        #endregion [ Encrypt Decrypt ]
 
         #region [ IsValidUrl ]
+
         /// <summary>
         /// Determines whether it is a valid URL.
         /// </summary>
@@ -394,9 +434,11 @@ namespace StaticAndExtensionsCSharp.Strings
         /// 	<c>true</c> if [is valid URL] [the specified text]; otherwise, <c>false</c>.
         /// </returns>
         public static bool IsValidUrl(this string text) => new Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?").IsMatch(text);
-        #endregion
+
+        #endregion [ IsValidUrl ]
 
         #region [ IsValidEmailAddress ]
+
         /// <summary>
         /// Determines whether it is a valid email address
         /// </summary>
@@ -408,17 +450,19 @@ namespace StaticAndExtensionsCSharp.Strings
             Regex regex = new Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
             return regex.IsMatch(email);
         }
-        #endregion
+
+        #endregion [ IsValidEmailAddress ]
 
         #region [ Email ]
+
         /// <summary>
         /// Send an email using the supplied string.
         /// </summary>
         /// <param name="body">String that will be used i the body of the email.</param>
         /// <param name="subject">Subject of the email.</param>
         /// <param name="sender">The email address from which the message was sent.</param>
-        /// <param name="recipient">The receiver of the email.</param> 
-        /// <param name="server">The server from which the email will be sent.</param>  
+        /// <param name="recipient">The receiver of the email.</param>
+        /// <param name="server">The server from which the email will be sent.</param>
         /// <returns>A boolean value indicating the success of the email send.</returns>
         public static bool Email(this string body, string subject, string sender, string recipient, string server)
         {
@@ -450,9 +494,11 @@ namespace StaticAndExtensionsCSharp.Strings
 
             return true;
         }
-        #endregion
+
+        #endregion [ Email ]
 
         #region [ Truncate ]
+
         /// <summary>
         /// Truncates the string to a specified length and replace the truncated to a ...
         /// </summary>
@@ -476,7 +522,8 @@ namespace StaticAndExtensionsCSharp.Strings
             truncatedString += suffix;
             return truncatedString;
         }
-        #endregion
+
+        #endregion [ Truncate ]
 
         #region [ HTMLHelper ]
 
@@ -514,6 +561,7 @@ namespace StaticAndExtensionsCSharp.Strings
         /// the Web server to a client.
         /// </summary>
         public static string UrlPathEncode(this string url) => HttpUtility.UrlPathEncode(url);
-        #endregion
+
+        #endregion [ HTMLHelper ]
     }
 }
