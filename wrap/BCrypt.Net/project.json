@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "net45": {
+      "bin": {
+        "assembly": "C:\\Users\\hugoc\\Documents\\Visual Studio 2015\\Projects\\TestApp\\packages\\BCrypt.Net-PCL.1.0.1\\lib\\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\\BCrypt.Net.dll"
+      }
+    }
+  }
+}
