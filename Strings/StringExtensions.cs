@@ -110,7 +110,7 @@
         #endregion [ SHA-1 ]
 
         #region [ Bcrypt ]
-        
+
         /// <summary>
         /// Create a secure hash based on the input string.
         /// </summary>
@@ -134,7 +134,7 @@
         /// <param name="plainTextPassword">The plain text password.</param>
         /// <param name="hashedPassword">The Encrypted password, normal stored on DB.</param>
         /// <returns></returns>
-        public static bool ComparePassword_BCrypt(this string plainTextPassword, string hashedPassword) => 
+        public static bool ComparePassword_BCrypt(this string plainTextPassword, string hashedPassword) =>
             BCrypt.Net.BCrypt.CheckPassword(plainTextPassword, hashedPassword);
         #endregion [ Bcrypt ]
 

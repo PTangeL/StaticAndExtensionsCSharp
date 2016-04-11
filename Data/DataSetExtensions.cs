@@ -74,7 +74,7 @@
                 if (columnsOnFilter.Where(n => table.Columns.Contains(n)).Count() == 0)
                 {
                     if(keepEmptyTables)
-                        toReturn.Tables.Add(table);
+                        toReturn.Tables.Add(table.Copy());
 
                     continue;
                 }
