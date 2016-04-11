@@ -35,8 +35,9 @@
         /// <param name="ds">The dataset.</param>
         /// <param name="column">The Column.</param>
         /// <param name="expectedValue">The value you expect to get from the column.</param>
+        /// <param name="keepEmptyTables">True if you want to keep empty tables with 0 rows.</param>
         /// <returns></returns>
-        public static DataSet Where(this DataSet ds, string column, object expectedValue)
+        public static DataSet Where(this DataSet ds, string column, object expectedValue, bool keepEmptyTables = true)
         {
             Contract.Requires(ds != null);
             Contract.Requires(expectedValue != null);
@@ -44,7 +45,7 @@
 
             Contract.Ensures(Contract.Result<DataSet>() != null);
 
-            return Where(ds, $"{column} = '{expectedValue.ToString()}'");
+            return Where(ds, $"{column} = '{expectedValue.ToString()}'", keepEmptyTables, column);
         }
 
         /// <summary>
@@ -53,8 +54,10 @@
         /// <param name="ds">The dataset.</param>
         /// <param name="filterExpression">Example: columnName: Size, expectedValue: >= 230, then the value on the filter: columnName >= expectedValue</param>
         /// <param name="columnsOnFilter">Fill this with the column names used at filterExpressions</param>
+        /// <param name="keepEmptyTables">True if you want to keep empty tables with 0 rows.</param>
         /// <returns></returns>
-        public static DataSet Where(this DataSet ds, string filterExpression, params string[] columnsOnFilter)
+        public static DataSet Where(this DataSet ds, string filterExpression, bool keepEmptyTables, 
+            params string[] columnsOnFilter)
         {
             Contract.Requires(ds != null);
             Contract.Requires(columnsOnFilter != null);
@@ -63,16 +66,26 @@
 
             var toReturn = ds.Clone();
             toReturn.Tables.Clear();
+            
+            
 
             foreach (DataTable table in ds.Tables)
             {
                 if (columnsOnFilter.Where(n => table.Columns.Contains(n)).Count() == 0)
+                {
+                    if(keepEmptyTables)
+                        toReturn.Tables.Add(table);
+
                     continue;
+                }
+                    
 
                 var filteredRows = table.Select(filterExpression);
                     
                 if(filteredRows.Any())
                     toReturn.Tables.Add(filteredRows.CopyToDataTable());
+                else
+                    toReturn.Tables.Add(table.Copy());
             }
 
             return toReturn;
