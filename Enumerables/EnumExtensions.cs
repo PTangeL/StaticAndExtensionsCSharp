@@ -5,6 +5,8 @@ namespace StaticAndExtensionsCSharp.Enumerables
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics.Contracts;
+    using System.Reflection;
 
     /// <summary>
     /// The Enums extensions and utilities are here. 
@@ -32,16 +34,25 @@ namespace StaticAndExtensionsCSharp.Enumerables
         /// <param name="self">
         /// The enumerable you want to get the attribute. 
         /// </param>
+        /// <param name="memberName">Fill this in case your enum have multiple cases with the same (int), here will be the value(name).</param>
         /// <returns>
         /// Returns the Attribute that you want. 
         /// </returns>
-        public static T ToAttributeOfType<T>(this Enum self) where T : Attribute
+        public static T ToAttributeOfType<T>(this Enum self, string memberName = "") where T : Attribute
         {
+            Contract.Requires(self != null, "Your enum can't be null.");
+            Contract.Ensures(Contract.Result<T>() != null);
+
             // Get the Attribute Type. 
             var type = self?.GetType();
 
             // Get the member of the type you want. 
-            var memInfo = type?.GetMember(self?.ToString());
+            var memInfo = default(MemberInfo[]);
+
+            if (!string.IsNullOrEmpty(memberName))
+                memInfo = type?.GetMember(memberName);
+            else
+                memInfo = type?.GetMember(self?.ToString());
 
             // Try to get on that member the Attribute you want. 
             var attributes = memInfo?[0]?.GetCustomAttributes(typeof(T), false);
