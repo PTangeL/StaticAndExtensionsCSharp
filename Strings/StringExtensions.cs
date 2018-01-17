@@ -268,14 +268,11 @@
         /// <returns>The Enum corresponding to the stringExtensions</returns>
         public static T ToEnum<T>(this string value, bool ignorecase = false)
         {
-            if (value == null)
-                throw new ArgumentNullException("Value");
+            if (string.IsNullOrEmpty(value))
+                return default(T);
 
             value = value.Trim();
-
-            if (value.Length == 0)
-                throw new ArgumentNullException("Must specify valid information for parsing in the string.", "value");
-
+            
             Type t = typeof(T);
             if (!t.IsEnum)
                 throw new ArgumentException("Type provided must be an Enum.", "T");
