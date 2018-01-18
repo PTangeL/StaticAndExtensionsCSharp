@@ -266,18 +266,20 @@
         /// <param name="value">String value to parse</param>
         /// <param name="ignorecase">Ignore the case of the string being parsed</param>
         /// <returns>The Enum corresponding to the stringExtensions</returns>
-        public static T ToEnum<T>(this string value, bool ignorecase = false)
+        public static T ToEnum<T>(this string value, bool ignorecase = false) where T : struct
         {
             if (string.IsNullOrEmpty(value))
                 return default(T);
 
             value = value.Trim();
-            
-            Type t = typeof(T);
+
+            var t = typeof(T);
             if (!t.IsEnum)
                 throw new ArgumentException("Type provided must be an Enum.", "T");
 
-            return (T)Enum.Parse(t, value, ignorecase);
+            Enum.TryParse(value, ignorecase, out T result);
+
+            return result;
         }
 
         /// <summary>
